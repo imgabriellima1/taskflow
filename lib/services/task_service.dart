@@ -6,6 +6,7 @@ class TaskService {
   Future<void> createTask({
     required String title,
     required String description,
+    String? assignee,
   }) async {
     final user = supabase.auth.currentUser;
 
@@ -14,6 +15,7 @@ class TaskService {
       'description': description,
       'completed': false,
       'user_id': user!.id,
+      'assignee': assignee,
     });
   }
 
@@ -42,10 +44,12 @@ class TaskService {
     required String id,
     required String title,
     required String description,
+    String? assignee,
   }) async {
     await supabase.from('tasks').update({
       'title': title,
       'description': description,
+      'assignee': assignee,
     }).eq('id', id);
   }
 

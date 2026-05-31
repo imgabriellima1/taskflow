@@ -87,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: tasks.length,
                   itemBuilder: (context, index) {
                     final task = tasks[index];
+                    final assignee = task['assignee'];
 
                     return Card(
                       child: ListTile(
@@ -100,7 +101,23 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                         title: Text(task['title']),
-                        subtitle: Text(task['description'] ?? ''),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(task['description'] ?? ''),
+                            if (assignee != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  'Responsável: $assignee',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                         onTap: () => openForm(task: task),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete),

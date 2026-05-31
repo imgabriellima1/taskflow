@@ -4,7 +4,7 @@ import '../services/task_service.dart';
 class TaskFormScreen extends StatefulWidget {
   final Map<String, dynamic>? task;
 
-  const TaskFormScreen({
+  const TaskFormScreen({  
     super.key,
     this.task,
   });
@@ -16,6 +16,7 @@ class TaskFormScreen extends StatefulWidget {
 class _TaskFormScreenState extends State<TaskFormScreen> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+  final assigneeController = TextEditingController();
   final taskService = TaskService();
 
   bool loading = false;
@@ -27,7 +28,16 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
     if (widget.task != null) {
       titleController.text = widget.task!['title'];
       descriptionController.text = widget.task!['description'] ?? '';
+      assigneeController.text = widget.task!['assignee'] ?? '';
     }
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    assigneeController.dispose();
+    super.dispose();
   }
 
   Future<void> saveTask() async {
@@ -45,12 +55,18 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
         await taskService.createTask(
           title: titleController.text.trim(),
           description: descriptionController.text.trim(),
+          assignee: assigneeController.text.trim().isEmpty
+              ? null
+              : assigneeController.text.trim(),
         );
       } else {
         await taskService.updateTaskData(
           id: widget.task!['id'],
           title: titleController.text.trim(),
           description: descriptionController.text.trim(),
+          assignee: assigneeController.text.trim().isEmpty
+              ? null
+              : assigneeController.text.trim(),
         );
       }
 
@@ -90,6 +106,15 @@ class _TaskFormScreenState extends State<TaskFormScreen> {
               controller: descriptionController,
               decoration: const InputDecoration(
                 labelText: 'Descrição',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: assigneeController,
+              decoration: const InputDecoration(
+                labelText: 'Responsável',
                 border: OutlineInputBorder(),
               ),
             ),
